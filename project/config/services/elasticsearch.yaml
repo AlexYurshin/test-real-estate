@@ -19,12 +19,6 @@ services:
   Elastica\Client:
     arguments:
       - {
-#          "host": "%env(ELASTIC_HOST)%",
-#          "port": "%env(ELASTIC_PORT)%",
-#          "username": "%env(ELASTIC_USERNAME)%",
-#          "password": "%env(ELASTIC_PASSWORD)%"
-          "host": "",
-          "port": "",
-          "username": "",
-          "password": ""
+          "host": "%env(ELASTIC_HOST)%",
+          "port": "%env(ELASTIC_PORT)%"
       }
