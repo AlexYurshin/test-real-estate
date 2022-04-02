@@ -38,6 +38,15 @@
     "doctrine/persistence": {
         "version": "2.4.1"
     },
+    "elasticsearch/elasticsearch": {
+        "version": "v7.17.0"
+    },
+    "ezimuel/guzzlestreams": {
+        "version": "3.0.1"
+    },
+    "ezimuel/ringphp": {
+        "version": "1.2.0"
+    },
     "fakerphp/faker": {
         "version": "v1.19.0"
     },
@@ -67,6 +76,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
+    },
+    "nyholm/dsn": {
+        "version": "2.0.1"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
@@ -132,6 +144,12 @@
     },
     "psr/log": {
         "version": "2.0.0"
+    },
+    "react/promise": {
+        "version": "v2.9.0"
+    },
+    "ruflin/elastica": {
+        "version": "7.1.5"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"
@@ -337,6 +355,9 @@
         ]
     },
     "symfony/runtime": {
+        "version": "v5.4.7"
+    },
+    "symfony/serializer": {
         "version": "v5.4.7"
     },
     "symfony/service-contracts": {

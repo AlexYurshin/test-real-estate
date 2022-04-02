@@ -17,9 +17,10 @@ class RequestMapper
     {
         $parameters = \array_merge(
             $request->attributes->get('_route_params', []),
-            $request->query->all(),
-            $request->request->all()
+            $request->query->all('filter') ?? []
         );
+
+        // @todo implement Filter mapper converter
 
         return $this->mapper->map($parameters, $targetClass);
     }

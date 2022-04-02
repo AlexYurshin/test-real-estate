@@ -13,7 +13,7 @@ class LocationControllerTest extends ApiTestCase
         $params = [
             'filter' => [
                 'type' => 'city',
-                'distance' => 1,
+                'distance' => 26,
                 'lat' => 29.12,
                 'lon' => -28.56
             ]
@@ -22,7 +22,7 @@ class LocationControllerTest extends ApiTestCase
         $res = static::createTester()
             ->sendGet(\sprintf('locations/nearest?%s', http_build_query($params)))
             ->toArray();
-
+dd($res);
         self::assertEquals(['test' => 'Hello world'], $res);
     }
 }
