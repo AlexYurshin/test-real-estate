@@ -21,10 +21,6 @@ class LocationControllerTest extends ApiTestCase
             return new Document(null, [
                 'name' => $data[0],
                 'type' => 'city',
-//                'location_geo' => [
-//                    'lat' => (float) $data[1],
-//                    'lon' => (float) $data[2],
-//                ],
                 'location_geo' => [(float)$data[1], (float)$data[2]],
             ]);
         }, $items);
@@ -47,14 +43,12 @@ class LocationControllerTest extends ApiTestCase
 
         $this->loadES($this->getFilePath(), $repository);
 
-
-
         $params = [
             'filter' => [
                 'type' => 'city',
-                'distance' => 26,
-                'lat' => 29.12,
-                'lon' => -28.56
+                'distance' => 60,
+                'lat' => 33.2342834,
+                'lon' => -97.5861393
             ]
         ];
 

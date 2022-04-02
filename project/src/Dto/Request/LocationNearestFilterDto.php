@@ -31,7 +31,7 @@ class LocationNearestFilterDto
      *
      * @var float
      */
-    public $lat;
+    public $lon;
 
     /**
      * @Assert\Type(type="numeric")
@@ -39,5 +39,5 @@ class LocationNearestFilterDto
      *
      * @var float
      */
-    public $lon;
+    public $lat;
 }
