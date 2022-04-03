@@ -73,7 +73,7 @@ class LocationControllerTest extends ApiTestCase
             ->sendGet(\sprintf('%s?%s', self::NEAREST_ENDPOINT, http_build_query($params)))
             ->toArray();
 
-        $expected = ['Pelican Bay', 'Highland Village', 'Chico', 'Shady Shores', 'Boyd'];
+        $expected = ['Bridgeport', 'Boyd', 'Chico', 'Dish', 'Krum'];
         $actual = array_column($response['items'], 'name');
 
         self::assertEquals($expected, $actual);
