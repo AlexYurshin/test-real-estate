@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   app:
     container_name: app
@@ -11,10 +11,16 @@ services:
     volumes:
       - ./project:/var/www/project
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
     container_name: elasticsearch
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
+      interval: 15s
+      timeout: 15s
+      retries: 5
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       xpack.security.enabled: "false"

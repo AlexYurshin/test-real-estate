@@ -7,6 +7,7 @@ Backend Test Assesement Real Estate
 # Installation
 Run the following commands:
 
-1. sh bin/start.sh
-2. composer install
-3. bin/phpunit
+1. cp ./project/.env.dist ./project/.env
+2. sh bin/start.sh
+3. composer install
+4. bin/phpunit
