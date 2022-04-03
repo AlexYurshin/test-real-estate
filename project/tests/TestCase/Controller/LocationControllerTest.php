@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\TestCase\Controller;
 
+use App\Controller\LocationController;
 use App\Repository\AbstractElasticSearchRepository;
 use App\Repository\LocationRepository;
 use App\Tests\JsonSchema\LocationSchema;
 use App\Tests\TestCase\Traits\ElasticsearchTrait;
 use Elastica\Document;
 use PhpSolution\FunctionalTest\TestCase\ApiTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class LocationControllerTest extends ApiTestCase
 {
@@ -47,6 +49,9 @@ class LocationControllerTest extends ApiTestCase
         return $this->loadES($this->getFilePath(), $repository);
     }
 
+    /**
+     * @see LocationController::nearest()
+     */
     public function testNearestWithFilterSuccess(): void
     {
        $fixtures = $this->loadFixtures();
@@ -74,5 +79,79 @@ class LocationControllerTest extends ApiTestCase
         self::assertEquals($expected, $actual);
         self::assertNotContains($city['name'], $actual);
         self::assertDataMatchesJsonType($response, LocationSchema::getCollectionJsonSchema());
+    }
+
+    /**
+     * @dataProvider failProvider
+     */
+    public function testNearestWithFilterFail(array $filter, array $expected): void
+    {
+        $this->loadFixtures();
+
+        $params = ['filter' => $filter];
+
+        $response = static::createTester()
+            ->setExpectedStatusCode(Response::HTTP_BAD_REQUEST)
+            ->sendGet(\sprintf('%s?%s', self::NEAREST_ENDPOINT, http_build_query($params)))
+            ->toArray();
+
+        self::assertEquals($expected['errors'], $response['errors']);
+    }
+
+    public function failProvider(): array
+    {
+        return [
+            'without distance' => [
+                'filter' => [
+                    'type' => 'city',
+                    'lon' => 11,
+                    'lat' => 12,
+                ],
+                'expected' => [
+                    'errors' => [
+                        'distance' => ['This value should not be blank.'],
+                    ]
+                ],
+            ],
+            'incorrect distance' => [
+                'filter' => [
+                    'type' => 'city',
+                    'distance' => -100,
+                    'lon' => 11,
+                    'lat' => 12,
+                ],
+                'expected' => [
+                    'errors' => [
+                        'distance' => ['This value should be positive.'],
+                    ]
+                ],
+            ],
+            'incorrect coordinates' => [
+                'filter' => [
+                    'type' => 'city',
+                    'distance' => 100,
+                    'lon' => str_pad('a', 10),
+                ],
+                'expected' => [
+                    'errors' => [
+                        'lon' => ['This value should be of type numeric.'],
+                        'lat' => ['This value should not be blank.'],
+                    ]
+                ],
+            ],
+            'incorrect type' => [
+                'filter' => [
+                    'type' => str_pad('a', 10),
+                    'distance' => 1,
+                    'lon' => 2,
+                    'lat' => 3,
+                ],
+                'expected' => [
+                    'errors' => [
+                        'type' => ['The value you selected is not a valid choice.'],
+                    ]
+                ],
+            ],
+        ];
     }
 }

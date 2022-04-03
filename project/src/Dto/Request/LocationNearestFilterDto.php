@@ -11,6 +11,7 @@ class LocationNearestFilterDto
     /**
      * @Assert\Type(type="string")
      * @Assert\NotBlank
+     * @Assert\Choice(callback={"App\Dictionary\LocationTypeDictionary", "getAllowedValues"})
      *
      * @var string
      */
