@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Sdk\Rest\Request\ParamConverter;
 
-use App\Sdk\ExceptionHandler\Exception\ValidationException;
+use App\Exception\ValidationException;
 use App\Sdk\Rest\Configuration\MapperParamConverter;
 use App\Sdk\Rest\Request\RequestMapper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

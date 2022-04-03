@@ -14,10 +14,4 @@ RUN php -r "readfile('https://getcomposer.org/installer');" | php && chmod +x co
     export COMPOSER_HOME="/root" && \
     export HOME="/root"
 
-# Add wait-for-it
-#ADD ./wait-for-it.sh /var/www/wait-for-it.sh
-#RUN chmod +x /var/www/wait-for-it.sh
-
 WORKDIR /var/www/project
-
-#CMD ["/var/www/wait-for-it.sh" , "elasticsearch:9200", "--" , "php", "-S", "0.0.0.0:8080"]

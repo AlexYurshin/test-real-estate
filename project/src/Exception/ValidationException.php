@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Sdk\ExceptionHandler\Exception;
+namespace App\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
