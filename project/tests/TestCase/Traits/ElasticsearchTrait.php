@@ -30,7 +30,7 @@ trait ElasticsearchTrait
         self::assertEquals(count($documents), $index->count());
     }
 
-    private function loadFixtures(string $file): array
+    private function getFixtures(string $file): array
     {
         $items = [];
 

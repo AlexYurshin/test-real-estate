@@ -20,6 +20,8 @@ class LocationRepository extends AbstractElasticSearchRepository
 
     public function findNearest(LocationNearestFilterDto $filter): array
     {
+        $coordinates = [(float)$filter->lon, (float)$filter->lat];
+
         $mustCondition = [
             'match' => [
                 'type' => $filter->type
@@ -29,16 +31,19 @@ class LocationRepository extends AbstractElasticSearchRepository
         $filterCondition = [
             'geo_distance' => [
                 'distance' => \sprintf('%skm', $filter->distance),
-                'location_geo' => [(float)$filter->lon, (float)$filter->lat]
+                'location_geo' => $coordinates
             ]
         ];
 
         $requestQuery = [
-            'size' => self::NEAREST_LOCATIONS_SIZE,
+            'size' => self::NEAREST_LOCATIONS_SIZE + 1,
             'query' => ['bool' => ['must' => $mustCondition, 'filter' => $filterCondition]]
         ];
-        $result = $this->initIndex()->search(new Query($requestQuery))->getResults();
 
-        return array_map(fn(Result $doc) => $doc->getData(), $result);
+        $resultEs = $this->initIndex()->search(new Query($requestQuery))->getResults();
+        $result = array_map(fn(Result $doc) => $doc->getData(), $resultEs);
+
+        //@todo fail
+        return array_filter($result, fn(array $data) => ($data['location_geo'] ?? []) !== $coordinates);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Tests\TestCase\Controller;
 
 use App\Repository\AbstractElasticSearchRepository;
 use App\Repository\LocationRepository;
+use App\Tests\JsonSchema\LocationSchema;
 use App\Tests\TestCase\Traits\ElasticsearchTrait;
 use Elastica\Document;
 use PhpSolution\FunctionalTest\TestCase\ApiTestCase;
@@ -14,9 +15,11 @@ class LocationControllerTest extends ApiTestCase
 {
     use ElasticsearchTrait;
 
+    private const NEAREST_ENDPOINT = 'locations/nearest';
+
     private function loadES(string $file, AbstractElasticSearchRepository $repository): array
     {
-        $items = $this->loadFixtures($file);
+        $items = $this->getFixtures($file);
         $documents = array_map(function (array $data) {
             return new Document(null, [
                 'name' => $data[0],
@@ -36,26 +39,40 @@ class LocationControllerTest extends ApiTestCase
         return __DIR__.'/../../DataFixtures/Stub/cities.csv';
     }
 
-    public function testNearestWithFilter(): void
+    private function loadFixtures(): array
     {
         /** @var LocationRepository $repository */
         $repository = self::getContainer()->get(LocationRepository::class);
 
-        $this->loadES($this->getFilePath(), $repository);
+        return $this->loadES($this->getFilePath(), $repository);
+    }
 
-        $params = [
+    public function testNearestWithFilterSuccess(): void
+    {
+       $fixtures = $this->loadFixtures();
+
+       /** @var Document $document */
+       $document = $fixtures[0];
+       $city = $document->getData();
+
+       $params = [
             'filter' => [
                 'type' => 'city',
                 'distance' => 60,
-                'lat' => 33.2342834,
-                'lon' => -97.5861393
+                'lon' => $city['location_geo'][0],
+                'lat' => $city['location_geo'][1],
             ]
-        ];
+       ];
 
-        $res = static::createTester()
-            ->sendGet(\sprintf('locations/nearest?%s', http_build_query($params)))
+        $response = static::createTester()
+            ->sendGet(\sprintf('%s?%s', self::NEAREST_ENDPOINT, http_build_query($params)))
             ->toArray();
-dd($res);
-        self::assertEquals(['test' => 'Hello world'], $res);
+
+        $expected = ['Pelican Bay', 'Highland Village', 'Chico', 'Shady Shores', 'Boyd'];
+        $actual = array_column($response['items'], 'name');
+
+        self::assertEquals($expected, $actual);
+        self::assertNotContains($city['name'], $actual);
+        self::assertDataMatchesJsonType($response, LocationSchema::getCollectionJsonSchema());
     }
 }
