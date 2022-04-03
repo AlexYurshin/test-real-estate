@@ -1,0 +1,24 @@
+parameters:
+  index_config_locations:
+    alias: !php/const App\Repository\LocationRepository::INDEX_ALIAS
+    mappings:
+      dynamic: strict
+      properties:
+        type:
+          type: keyword
+        name:
+          type: text
+        location_geo:
+          type: geo_point
+
+services:
+  App\Service\ElasticSearchMetadataRegistry:
+    calls:
+      - addConfig: ['%index_config_locations%']
+
+  Elastica\Client:
+    arguments:
+      - {
+          "host": "%env(ELASTIC_HOST)%",
+          "port": "%env(ELASTIC_PORT)%"
+      }

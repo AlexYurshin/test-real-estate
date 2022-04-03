@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    container_name: app
+    build: .
+    environment:
+      ELASTIC_HOST: elasticsearch
+      ELASTIC_PORT: 9200
+    ports:
+      - 8080:8080
+    volumes:
+      - ./project:/var/www/project
+    depends_on:
+      - elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.2
+    container_name: elasticsearch
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      xpack.security.enabled: "false"
+      discovery.type: single-node
+    ports:
+      - 9200:9200
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+volumes:
+  es-data:
+    driver: local
